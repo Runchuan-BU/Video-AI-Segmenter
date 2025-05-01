@@ -1,0 +1,24 @@
+# === Python / Poetry ===
+__pycache__/
+*.py[cod]
+.env
+.venv/
+poetry.lock
+
+# === FastAPI artifacts ===
+uploads/
+frames/
+*.log
+
+# === Node / Next.js ===
+node_modules/
+.next/
+out/
+*.log
+
+# === Tailwind output ===
+output.css
+
+# === VS Code and system files ===
+.vscode/
+.DS_Store
