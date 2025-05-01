@@ -1,4 +1,3 @@
-```md
 # Video-AI-Segmenter 🎬🧠
 
 AI-powered tool for segmenting videos into timestamped action descriptions using Google Gemini. Built with FastAPI and Next.js.
@@ -110,4 +109,3 @@ Video-AI-Segmenter/
 ## 📄 License
 
 MIT © 2025 [Runchuan Feng](https://github.com/Runchuan-BU)
-```
