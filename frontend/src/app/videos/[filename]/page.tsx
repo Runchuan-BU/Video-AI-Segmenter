@@ -15,8 +15,15 @@ export default function VideoDetailPage() {
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('GEMINI-2.0-FLASH');
   const analysisCache = useRef<Record<string, AnalysisResult>>({});
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const MODEL_OPTIONS = [
+    'GEMINI-2.0-FLASH',
+    'GEMINI-2.0-FLASH-LITE',
+    'GEMINI-1.5-PRO',
+  ];
 
   const parseStartTime = (slot: string): number => {
     const match = slot.match(/^(\d{2}):(\d{2})/);
@@ -38,7 +45,10 @@ export default function VideoDetailPage() {
     try {
       const res = await fetch('http://localhost:8000/analyze', {
         method: 'POST',
-        body: new URLSearchParams({ filepath: filename as string }),
+        body: new URLSearchParams({
+          filepath: filename as string,
+          model: selectedModel,
+        }),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
@@ -90,6 +100,22 @@ export default function VideoDetailPage() {
           controls
           className="w-full max-h-[480px] rounded mb-6"
         />
+
+        {/* 模型选择 */}
+        <div className="mb-6">
+          <label className="block mb-1 font-medium text-gray-700">Select Gemini Model:</label>
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 w-full max-w-xs"
+          >
+            {MODEL_OPTIONS.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {!hasAnalyzed && (
           <div className="mt-6 flex justify-center gap-4">

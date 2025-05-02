@@ -2,6 +2,8 @@
 
 AI-powered tool for segmenting videos into timestamped action descriptions using Google Gemini. Built with FastAPI and Next.js.
 
+https://www.youtube.com/channel/UCk2tYTMtT9b43Jb0toR7pBg
+
 ---
 
 ## 🚀 Getting Started
@@ -44,7 +46,7 @@ Then run the backend server:
 
 ```bash
 cd app
-uvicorn app.main:app --reload
+uvicorn main:app --reload
 ```
 
 > By default it runs on `http://localhost:8000`
@@ -74,13 +76,21 @@ npm run dev
 
 ```
 Video-AI-Segmenter/
-├── backend/       # FastAPI backend
-│   ├── videos/        # Uploaded video files
+├── backend/               # FastAPI backend
+│   ├── videos/            # Uploaded video files
 │   └── app/
 │       ├── main.py
-│       └── services/ai_model_gemini.py
-├── frontend/      # Next.js frontend
-│   └── src/app/videos/[filename]/page.tsx
+│       └── services/
+│           └── ai_model_gemini.py
+├── frontend/              # Next.js frontend
+│   └── src/app/
+│       ├── page.tsx
+│       ├── upload/
+│       │   └── page.tsx
+│       └── videos/
+│           ├── page.tsx
+│           └── [filename]/page.tsx
+
 
 ```
 

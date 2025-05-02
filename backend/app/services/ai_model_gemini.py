@@ -16,7 +16,7 @@ class Segment(BaseModel):
 class GeminiVideoAnalyzer:
     AVAILABLE_MODELS = {
         "GEMINI-2.0-FLASH": "gemini-2.0-flash",
-        "GEMINI-2.0-PRO": "gemini-2.0-pro",
+        "GEMINI-2.0-FLASH-LITE": "gemini-2.0-flash-lite",
         "GEMINI-1.5-PRO": "gemini-1.5-pro",
     }
 
