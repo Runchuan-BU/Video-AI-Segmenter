@@ -2,7 +2,7 @@
 import os
 import pytest
 from unittest.mock import patch, MagicMock
-from app.services.ai_model import analyze_video_file
+from app.services.ai_model_gemini import analyze_video_file_gemini
 
 @pytest.fixture
 def sample_video(tmp_path):
@@ -10,7 +10,7 @@ def sample_video(tmp_path):
     video.write_bytes(b"dummy video content")
     return str(video)
 
-@patch("app.services.ai_model.get_genai_client")
+@patch("app.services.ai_model_gemini.get_genai_client")
 def test_analyze_video_success(mock_get_client, sample_video):
     mock_client = MagicMock()
     mock_get_client.return_value = mock_client
@@ -23,13 +23,13 @@ def test_analyze_video_success(mock_get_client, sample_video):
     mock_response.text = "Robot is picking up an object."
     mock_client.models.generate_content.return_value = mock_response
 
-    result = analyze_video_file(sample_video)
+    result = analyze_video_file_gemini(sample_video)
 
     assert result["status"] == "success"
     assert result["file"] == "sample.mp4"
     assert result["summary"] == "Robot is picking up an object."
 
-def test_analyze_video_file_not_found():
-    result = analyze_video_file("not_exists.mp4")
+def test_analyze_video_file_gemini_not_found():
+    result = analyze_video_file_gemini("not_exists.mp4")
     assert result["status"] == "error"
     assert "not found" in result["error"]

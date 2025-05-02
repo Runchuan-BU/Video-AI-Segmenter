@@ -11,7 +11,9 @@ import uuid
 import subprocess
 import time
 
-from services.ai_model import analyze_video_file
+from services.ai_model_gemini import GeminiVideoAnalyzer
+
+analyzer = GeminiVideoAnalyzer()
 
 app = FastAPI()
 
@@ -30,7 +32,9 @@ os.makedirs(VIDEOS_DIR, exist_ok=True)
 @app.post("/upload_video")
 async def upload_video(file: UploadFile = File(...)):
     # file_id = str(uuid.uuid4())
-    filename = f"{int(time.time())}_{uuid.uuid4()}_{file.filename}"
+    # filename = f"{int(time.time())}_{uuid.uuid4()}_{file.filename}"
+    filename = f"{int(time.time())}_{file.filename}"
+
     filepath = os.path.join(VIDEOS_DIR, filename)
 
     try:
@@ -48,23 +52,13 @@ async def upload_video(file: UploadFile = File(...)):
 @app.post("/analyze")
 async def analyze_uploaded_video(
     filepath: str = Form(...), 
-    model: str = Form("gemini")
+    model: str = Form("GEMINI-2.0-FLASH")
 ):
-    safe_filename = os.path.basename(filepath)
-    full_path = os.path.join(VIDEOS_DIR, safe_filename)
-
+    full_path = os.path.join(VIDEOS_DIR, os.path.basename(filepath))
     print(f"Received filename: {filepath}")
-    print(f"Safe filename: {safe_filename}")
-    print(f"Full path: {full_path}")
-    print(f"Files in videos/: {os.listdir(VIDEOS_DIR)}")
-
-    if not os.path.exists(full_path):
-        return JSONResponse(status_code=404, content={"status": "error", "error": f"File not found: {safe_filename}"})
-
-    results = analyze_video_file(full_path)
+    results = analyzer.analyze(full_path, model_key=model)
     print(f"Results: {results}")
     return results
-
 
 
 @app.get("/list-videos")

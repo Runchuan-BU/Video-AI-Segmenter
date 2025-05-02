@@ -78,7 +78,7 @@ Video-AI-Segmenter/
 │   ├── videos/        # Uploaded video files
 │   └── app/
 │       ├── main.py
-│       └── services/ai_model.py
+│       └── services/ai_model_gemini.py
 ├── frontend/      # Next.js frontend
 │   └── src/app/videos/[filename]/page.tsx
 

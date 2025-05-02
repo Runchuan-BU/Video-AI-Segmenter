@@ -92,17 +92,25 @@ export default function VideoDetailPage() {
         />
 
         {!hasAnalyzed && (
-          <button
-            onClick={handleAnalyze}
-            className="mb-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            🧠 Start Analysis
-          </button>
+          <div className="mt-6 flex justify-center gap-4">
+            <button
+              onClick={handleAnalyze}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              🧠 Start Analysis
+            </button>
+            <button
+              onClick={() => router.push('/videos')}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            >
+              ⬅️ Back to Video List
+            </button>
+          </div>
         )}
 
         {hasAnalyzed && (
           <>
-            <div className="text-left">
+            <div className="text-left mt-6">
               <h3 className="font-semibold mb-2">🧠 Analysis Result:</h3>
               {loading ? (
                 <p>Loading...</p>
@@ -158,16 +166,15 @@ export default function VideoDetailPage() {
               >
                 📋 Copy Result
               </button>
+              <button
+                onClick={() => router.push('/videos')}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+              >
+                ⬅️ Back to Video List
+              </button>
             </div>
           </>
         )}
-
-        <button
-          onClick={() => router.push('/videos')}
-          className="mt-8 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-        >
-          ⬅️ Back to Video List
-        </button>
       </div>
     </main>
   );
