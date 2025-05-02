@@ -41,7 +41,10 @@ def extract_video_links(url: str) -> list[str]:
 class SaveLinksRequest(BaseModel):
     links: list[str]
 
-def download_selected_links(data: SaveLinksRequest, save_dir: str):
+def download_selected_links(
+        data: SaveLinksRequest, 
+        save_dir: str
+        ) -> dict:
     os.makedirs(save_dir, exist_ok=True)
     saved = []
     failed = []
@@ -59,5 +62,5 @@ def download_selected_links(data: SaveLinksRequest, save_dir: str):
     return {
         "saved": saved,
         "failed": failed,
-        "message": f"saved: {len(saved)} ,  failed: {len(failed)} 个"
+        "message": f"saved: {len(saved)},  failed: {len(failed)} "
     }

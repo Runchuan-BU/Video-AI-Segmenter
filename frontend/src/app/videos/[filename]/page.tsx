@@ -26,10 +26,10 @@ export default function VideoDetailPage() {
   ];
 
   const parseStartTime = (slot: string): number => {
-    const match = slot.match(/^(\d{2}):(\d{2})/);
+    const match = slot.trim().split(' ')[0].match(/^(\d{2}):(\d{2})$/);
     if (!match) return 0;
     const [, min, sec] = match;
-    return parseInt(min) * 60 + parseInt(sec);
+    return parseInt(min, 10) * 60 + parseInt(sec, 10);
   };
 
   const handleAnalyze = async () => {
@@ -45,30 +45,30 @@ export default function VideoDetailPage() {
     try {
       const res = await fetch('http://localhost:8000/analyze', {
         method: 'POST',
-        body: new URLSearchParams({
-          filepath: filename as string,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filepath: filename,
           model: selectedModel,
         }),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
       const data = await res.json();
+      console.log("analyze response:", data);
+
       let result: AnalysisResult;
 
-      if (data.status === 'error') {
-        result = { error: data.error };
-      } else if (data.status === 'success' && typeof data.results === 'string') {
-        try {
-          result = JSON.parse(data.results);
-        } catch {
-          result = data.results;
-        }
-      } else if ('results' in data) {
-        result = data.results;
+      if (!res.ok || !data.results || !data.results.results) {
+        result = { error: data.message || 'Analysis failed' };
       } else {
-        result = { error: 'Unknown response format' };
+        try {
+          const raw = data.results.results;
+          result = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        } catch (err) {
+          result = { error: 'Failed to parse nested results' };
+        }
       }
 
+      console.log("🔍 final parsed result:", result);
       analysisCache.current[filename as string] = result;
       setAnalysis(result);
     } catch (err: any) {
@@ -101,7 +101,6 @@ export default function VideoDetailPage() {
           className="w-full max-h-[480px] rounded mb-6"
         />
 
-        {/* 模型选择 */}
         <div className="mb-6">
           <label className="block mb-1 font-medium text-gray-700">Select Gemini Model:</label>
           <select
@@ -142,12 +141,10 @@ export default function VideoDetailPage() {
                 <p>Loading...</p>
               ) : analysis === null ? (
                 <p>No result.</p>
-              ) : typeof analysis === 'string' ? (
-                <pre className="bg-gray-100 p-4 rounded text-sm">{analysis}</pre>
-              ) : 'error' in analysis && !showError ? (
+              ) : 'error' in (analysis as any) && !showError ? (
                 <p>Processing...</p>
-              ) : 'error' in analysis ? (
-                <p className="text-red-600">❌ Error: {analysis.error}</p>
+              ) : 'error' in (analysis as any) ? (
+                <p className="text-red-600">❌ Error: {(analysis as any).error}</p>
               ) : Array.isArray(analysis) ? (
                 <table className="table-auto w-full border-collapse border border-gray-300 text-left text-sm">
                   <thead>
@@ -157,7 +154,7 @@ export default function VideoDetailPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {analysis.map((item, index) => (
+                    {(analysis as Segment[]).map((item, index) => (
                       <tr
                         key={index}
                         className="even:bg-gray-50 cursor-pointer hover:bg-yellow-100 transition"
@@ -172,6 +169,8 @@ export default function VideoDetailPage() {
                     ))}
                   </tbody>
                 </table>
+              ) : typeof analysis === 'string' ? (
+                <pre className="bg-gray-100 p-4 rounded text-sm">{analysis}</pre>
               ) : (
                 <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto whitespace-pre-wrap text-left">
                   {JSON.stringify(analysis, null, 2)}
