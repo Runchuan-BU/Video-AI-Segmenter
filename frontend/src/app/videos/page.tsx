@@ -1,9 +1,9 @@
 // src/app/videos/page.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import VideoListItem from '@/components/video/VideoListItem';
 
 export default function VideoListPage() {
   const [videos, setVideos] = useState<string[]>([]);
@@ -22,11 +22,7 @@ export default function VideoListPage() {
         <ul className="space-y-3">
           {videos.map((filename) => (
             <li key={filename}>
-              <Link href={`/videos/${encodeURIComponent(filename)}`}>
-                <span className="block text-blue-600 hover:underline cursor-pointer">
-                  🎬 {filename}
-                </span>
-              </Link>
+              <VideoListItem filename={filename} />
             </li>
           ))}
         </ul>
