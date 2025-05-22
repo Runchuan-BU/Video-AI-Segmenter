@@ -14,12 +14,14 @@ This document explains the design rationale behind the three user roles in the s
 **Permissions:**
 - View the video and its timeline
 - Create and edit segments (time range + summary description)
-- Cannot edit or comment on others' segments
+- Save results as new analysis versions
+- Cannot comment on or delete any segment
 
 **UI Implications:**
-- Display segment list
+- Display editable segment list
 - Allow jumping to timestamps
-- Text area to add/edit summary
+- “Start Analysis” and “Save” buttons
+- Text area for editing summaries
 
 ---
 
@@ -27,15 +29,15 @@ This document explains the design rationale behind the three user roles in the s
 **Goal:** Audit the Annotator's work, ensure accuracy and consistency.
 
 **Permissions:**
-- View all segments
-- Edit segment summaries if needed
-- Add tags like “issue”, “unclear”, “redundant”
-- Leave inline or panel-based comments on each segment
+- View all segment results (read-only)
+- Add feedback comments with customizable tags
+- Cannot edit segment content
 
 **UI Implications:**
-- Editable segment descriptions
-- Tag buttons under each segment
-- Comment box for feedback
+- Read-only segment list with clickable timestamps
+- TagSelector + comment box
+- History panel of past analysis versions
+- “Add Comment” button per version
 
 ---
 
@@ -43,16 +45,16 @@ This document explains the design rationale behind the three user roles in the s
 **Goal:** Manage the overall flow and oversee the content lifecycle.
 
 **Permissions:**
-- Upload new videos
-- Trigger re-analysis (e.g., if the model improves)
-- View audit history or logs (mocked)
-- Has read-only access to all segments
+- View all analysis history
+- Delete outdated analysis versions
+- Delete inappropriate comments
+- Has read-only access to segment content
 
 **UI Implications:**
-- Upload section
-- Re-analysis button
-- Read-only segment view
-- View change log or mock history
+- View-only version list
+- “Delete” button for each version and comment
+- Timeline table with clickable time slots
+- Display tags and comment content
 
 ---
 
@@ -76,8 +78,8 @@ If this system were to scale:
 
 ## ✅ Summary Table
 
-| Role       | Create Segments | Edit Descriptions | Comment | Add Tags | Upload Video | Re-analyze | View Logs |
-|------------|------------------|--------------------|---------|----------|---------------|-------------|------------|
-| Annotator  | ✅               | ✅                 | ❌      | ❌       | ❌            | ❌          | ❌         |
-| Reviewer   | ❌               | ✅                 | ✅      | ✅       | ❌            | ❌          | ❌         |
-| Admin      | ❌               | ❌ (read-only)     | ❌      | ❌       | ✅            | ✅          | ✅         |
+| Role       | Create Segments | Edit Descriptions | Comment | Add Tags | Upload Video | Re-analyze | View Logs | Delete |
+|------------|------------------|--------------------|---------|----------|---------------|-------------|------------|---------|
+| Annotator  | ✅               | ✅                 | ❌      | ❌       | ❌            | ❌          | ❌         | ❌      |
+| Reviewer   | ❌               | ❌ (read-only)     | ✅      | ✅       | ❌            | ❌          | ❌         | ❌      |
+| Admin      | ❌               | ❌ (read-only)     | ❌      | ❌       | ✅ (mocked)   | ✅ (mocked) | ✅ (mocked)| ✅      |
