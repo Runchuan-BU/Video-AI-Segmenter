@@ -1,0 +1,95 @@
+{
+  "filename": "teleop_all.mp4",
+  "history": [
+    {
+      "timestamp": "2025-05-22T11:37:52.428670",
+      "results": [
+        {
+          "time_slot": "00:00 - 00:04",
+          "description": "A robot installs a drill bit into a power drill. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:04 - 00:09",
+          "description": "A robot installs RAM into a motherboard. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:09 - 00:19",
+          "description": "A robot unboxes an item that is packaged in a small, black box. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:19 - 00:25",
+          "description": "A robot assembles components on a white board. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:25 - 00:32",
+          "description": "A robot assembles components on a white board. The video is shown at 20x speed."
+        },
+        {
+          "time_slot": "00:33 - 00:38",
+          "description": "A robot juggles a ping pong ball on a ping pong paddle in real-time."
+        },
+        {
+          "time_slot": "00:38 - 00:46",
+          "description": "A robot balances a ping pong ball on a ping pong paddle in real-time."
+        },
+        {
+          "time_slot": "00:46 - 00:52",
+          "description": "A robot assembles a pair of wireless headphones. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:52 - 00:55",
+          "description": "A robot connects a USB charging cable to a cell phone. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "00:55 - 01:02",
+          "description": "A robot ties a knot in a USB charging cable. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:02 - 01:05",
+          "description": "A robot picks up a credit card. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:05 - 01:06",
+          "description": "A robot uses a dustpan and brush to sweep up screws and pieces of metal on a table. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:06 - 01:11",
+          "description": "A robot buttons up a cardigan. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:11 - 01:13",
+          "description": "A robot uses a brush to coat the inside of a bottle with an unknown liquid. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:13 - 01:15",
+          "description": "A robot opens the lid to a plastic box. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:15 - 01:19",
+          "description": "A robot wraps a metal bowl with cling film. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:19 - 01:24",
+          "description": "A robot opens the lid to a cardboard container of oatmeal. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:24 - 01:28",
+          "description": "A robot unwraps a piece of candy. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:28 - 01:35",
+          "description": "A robot ties a zip tie around a set of electrical cables. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:35 - 01:39",
+          "description": "A robot zips up a fleece hoodie. The video is shown at 10x speed."
+        },
+        {
+          "time_slot": "01:39 - 01:46",
+          "description": "A robot stacks plastic cups into a pyramid. The video is shown at 10x speed."
+        }
+      ],
+      "comments": []
+    }
+  ]
+}

@@ -11,7 +11,8 @@ router = APIRouter()
 async def upload_video(
     file: UploadFile = File(...)
 ):
-    filename = f"{int(time.time())}_{file.filename}"
+    # filename = f"{int(time.time())}_{file.filename}"
+    filename = file.filename
     filepath = os.path.join(VIDEOS_DIR, filename)
 
     with open(filepath, "wb") as buffer:

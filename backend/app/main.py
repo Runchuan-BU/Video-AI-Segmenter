@@ -7,6 +7,7 @@ import os
 
 from app.api import upload, analyze, video_list
 from app.api import videos_from_url
+from app.api import results, admin
 from app.config import VIDEOS_DIR
 import logging
 
@@ -26,5 +27,7 @@ app.include_router(upload.router)
 app.include_router(analyze.router)
 app.include_router(video_list.router)
 app.include_router(videos_from_url.router)
+app.include_router(results.router)
+app.include_router(admin.router)
 
 app.mount("/videos", StaticFiles(directory=VIDEOS_DIR), name="videos")
