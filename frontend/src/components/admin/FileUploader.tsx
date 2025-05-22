@@ -1,3 +1,5 @@
+// src/components/admin/FileUploader.tsx
+
 'use client';
 
 type Props = {

@@ -1,3 +1,5 @@
+// src/components/video/ModelSelector.tsx
+
 'use client';
 import React from 'react';
 
