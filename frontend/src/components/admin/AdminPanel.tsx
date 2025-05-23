@@ -12,6 +12,7 @@ import {
   deleteComment,
 } from '@/utils/adminHelpers';
 import TimeSegmentTable from '@/components/ui/TimeSegmentTable';
+import ActionButtons from '@/components/ui/ActionButtons';
 
 interface AnalysisVersion {
   timestamp: string;

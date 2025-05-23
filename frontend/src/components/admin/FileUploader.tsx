@@ -2,6 +2,8 @@
 
 'use client';
 
+import ActionButtons from '@/components/ui/ActionButtons';
+
 type Props = {
   file: File | null;
   setFile: (file: File | null) => void;
@@ -41,6 +43,7 @@ export default function FileUploader({ file, setFile, uploaded, setUploaded, sho
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium text-gray-700">📤 Upload from Local File</h3>
+
       {!uploaded ? (
         <>
           <input
@@ -49,23 +52,31 @@ export default function FileUploader({ file, setFile, uploaded, setUploaded, sho
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="w-full border px-4 py-2 rounded"
           />
-          <button
-            onClick={handleUpload}
-            disabled={!file}
-            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition"
-          >
-            🚀 Upload & Save
-          </button>
+
+          <ActionButtons
+            buttons={[
+              {
+                label: '🚀 Upload & Save',
+                color: 'purple',
+                onClick: handleUpload,
+                disabled: !file,
+              },
+            ]}
+          />
         </>
       ) : (
         <>
           <p className="text-green-600 font-medium">✅ Upload successful!</p>
-          <button
-            onClick={reset}
-            className="w-full px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
-          >
-            ➕ Upload Another
-          </button>
+
+          <ActionButtons
+            buttons={[
+              {
+                label: '➕ Upload Another',
+                color: 'green',
+                onClick: reset,
+              },
+            ]}
+          />
         </>
       )}
     </div>

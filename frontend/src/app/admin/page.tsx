@@ -9,6 +9,7 @@ import { RootState } from '@/redux/store';
 import FileUploader from '@/components/admin/FileUploader';
 import LinkExtractor from '@/components/admin/LinkExtractor';
 import VideoList from '@/components/admin/VideoList';
+import ActionButtons from '@/components/ui/ActionButtons';
 
 export default function AdminPage() {
   const role = useSelector((state: RootState) => state.role);
@@ -50,20 +51,20 @@ export default function AdminPage() {
         <LinkExtractor link={link} setLink={setLink} setVideos={setVideos} showToast={showToast} />
         <VideoList videos={videos} selected={selected} setSelected={setSelected} showToast={showToast} />
 
-        <div className="flex justify-center gap-4 mt-6">
-          <button
-            onClick={() => router.push('/')}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-          >
-            ⬅️ Back to Home
-          </button>
-          <button
-            onClick={() => router.push('/videos')}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            📺 Go to Video List
-          </button>
-        </div>
+        <ActionButtons
+          buttons={[
+            {
+              label: '⬅️ Back to Home',
+              color: 'gray',
+              onClick: () => router.push('/'),
+            },
+            {
+              label: '📺 Go to Video List',
+              color: 'blue',
+              onClick: () => router.push('/videos'),
+            },
+          ]}
+        />
       </div>
 
       {toast && (

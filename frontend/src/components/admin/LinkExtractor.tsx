@@ -1,4 +1,8 @@
+// src/components/admin/LinkExtractor.tsx
+
 'use client';
+
+import ActionButtons from '@/components/ui/ActionButtons';
 
 type Props = {
   link: string;
@@ -30,12 +34,17 @@ export default function LinkExtractor({ link, setLink, setVideos, showToast }: P
         placeholder="Enter a URL containing videos"
         className="w-full border px-4 py-2 rounded"
       />
-      <button
-        onClick={handleExtract}
-        className="w-full px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition"
-      >
-        🔍 Extract
-      </button>
+
+      <ActionButtons
+        buttons={[
+          {
+            label: '🔍 Extract',
+            color: 'purple',
+            onClick: handleExtract,
+            disabled: !link.trim(),
+          },
+        ]}
+      />
     </div>
   );
 }

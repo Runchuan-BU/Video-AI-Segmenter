@@ -7,7 +7,8 @@ type ButtonConfig = {
   label: string;
   icon?: string; // like 🔄 📋 ⬅️
   onClick: () => void;
-  color?: 'blue' | 'green' | 'gray' | 'red';
+  color?: 'blue' | 'green' | 'gray' | 'red' | 'purple';
+  disabled?: boolean;
 };
 
 type Props = {
@@ -15,24 +16,34 @@ type Props = {
 };
 
 export default function ActionButtons({ buttons }: Props) {
-  const colorMap = {
-    blue: 'bg-blue-600 hover:bg-blue-700',
-    green: 'bg-green-600 hover:bg-green-700',
-    gray: 'bg-gray-500 hover:bg-gray-600',
-    red: 'bg-red-600 hover:bg-red-700',
+  const colorMap: Record<string, string> = {
+    blue: 'bg-blue-500 hover:bg-blue-600 text-white',
+    green: 'bg-green-500 hover:bg-green-600 text-white',
+    gray: 'bg-gray-200 hover:bg-gray-300 text-gray-800 border border-gray-500',
+    red: 'bg-red-500 hover:bg-red-600 text-white',
+    purple: 'bg-purple-500 hover:bg-purple-600 text-white',
   };
 
   return (
-    <div className="flex justify-center gap-4 flex-wrap mt-6">
-      {buttons.map((btn, idx) => (
-        <button
-          key={idx}
-          onClick={btn.onClick}
-          className={`px-4 py-2 text-white rounded transition ${colorMap[btn.color ?? 'gray']}`}
-        >
-          {btn.icon} {btn.label}
-        </button>
-      ))}
+    <div className="flex flex-wrap justify-center gap-3 mt-6">
+      {buttons.map((btn, idx) => {
+        const baseClasses = `min-w-[120px] px-4 py-2 text-sm font-medium rounded-md transition text-center`;
+        const colorClasses = colorMap[btn.color ?? 'gray'];
+        const disabledClasses = btn.disabled
+          ? 'opacity-50 cursor-not-allowed hover:bg-inherit'
+          : '';
+
+        return (
+          <button
+            key={idx}
+            onClick={btn.onClick}
+            disabled={btn.disabled}
+            className={`${baseClasses} ${colorClasses} ${disabledClasses}`}
+          >
+            {btn.icon} {btn.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
