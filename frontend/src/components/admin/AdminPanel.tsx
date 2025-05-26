@@ -104,24 +104,21 @@ export default function AdminPanel({
           <ul className="text-sm space-y-1">
             {selected.comments.map((c, i) => (
               <li key={i} className="py-2">
-                <div className="flex flex-wrap items-center gap-2 pl-1">
-                  {c.tags.map((tag) => (
-                    <TagButton
-                      key={tag}
-                      tag={tag}
-                      tagColor={tag}
-                      selected={false}
-                      onClick={() => {}}
-                    />
-                  ))}
-                  <p className="text-sm text-gray-800 leading-snug ml-1">
-                    {c.content}
-                  </p>
-                </div>
-
-                <div className="mt-2 w-8/11 mx-auto border-t border-gray-200"></div>
-
-                <div className="flex justify-end pr-1 mt-1">
+                <div className="flex justify-between items-start pl-1 pr-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {c.tags.map((tag) => (
+                      <TagButton
+                        key={tag}
+                        tag={tag}
+                        tagColor={tag}
+                        selected={false}
+                        onClick={() => {}}
+                      />
+                    ))}
+                    <p className="text-sm text-gray-800 leading-snug ml-1">
+                      {c.content}
+                    </p>
+                  </div>
                   <button
                     onClick={() => handleDeleteComment(i)}
                     className={deleteButtonClass}
@@ -129,6 +126,7 @@ export default function AdminPanel({
                     Delete
                   </button>
                 </div>
+                <div className="mt-2 w-8/11 mx-auto border-t border-gray-200"></div>
               </li>
             ))}
           </ul>
