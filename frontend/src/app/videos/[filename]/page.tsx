@@ -156,8 +156,8 @@ export default function VideoDetailPage() {
         
         {/* annotator */}
         {!hasAnalyzed && role === 'annotator' && (
-          <div className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4">
-            <div className="w-full md:w-auto">
+          <div className="mt-6 flex flex-col items-center justify-center gap-4">
+            <div className="w-full max-w-md mx-auto">
               <ModelSelector
                 options={MODEL_OPTIONS}
                 value={selectedModel}
@@ -181,7 +181,7 @@ export default function VideoDetailPage() {
                 },
               ]}
             />
-          </div>
+        </div>
         )}
         {hasAnalyzed && role === 'annotator' && (
           <AnalysisResultTable

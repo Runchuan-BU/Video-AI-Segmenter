@@ -118,13 +118,6 @@ export default function AnalysisResultTable({
     }
   };
 
-  const parseStartTime = (slot: string): number => {
-    const match = slot.trim().split(' ')[0].match(/^(\d{2}):(\d{2})$/);
-    if (!match) return 0;
-    const [, min, sec] = match;
-    return parseInt(min, 10) * 60 + parseInt(sec, 10);
-  };
-
   return (
     <div className="text-left mt-6">
       <h3 className="font-semibold mb-2">🧠 Analysis Result:</h3>
