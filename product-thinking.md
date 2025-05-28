@@ -9,6 +9,7 @@ This document explains the design rationale behind the three user roles in the s
 ## 👤 Roles and Responsibilities
 
 ### 1. Annotator
+
 **Goal:** Segment the video into meaningful time slots and write a summary for each.
 
 **Permissions:**
@@ -18,69 +19,74 @@ This document explains the design rationale behind the three user roles in the s
 - Cannot comment on or delete any segment
 
 **UI Implications:**
-- Display editable segment list
+- Editable segment list with optional AI-generated initialization
 - Allow jumping to timestamps
-- “Start Analysis” and “Save” buttons
-- Text area for editing summaries
+- “Save” button to persist changes
+- Text area for editing segment descriptions
 
 ---
 
 ### 2. Reviewer
+
 **Goal:** Audit the Annotator's work, ensure accuracy and consistency.
 
 **Permissions:**
-- View all segment results (read-only)
+- View all analysis versions (read-only)
 - Add feedback comments with customizable tags
-- Cannot edit segment content
+- Cannot edit or delete segments
 
 **UI Implications:**
 - Read-only segment list with clickable timestamps
-- TagSelector + comment box
+- TagSelector + comment input
 - History panel of past analysis versions
 - “Add Comment” button per version
 
 ---
 
 ### 3. Admin
+
 **Goal:** Manage the overall flow and oversee the content lifecycle.
 
 **Permissions:**
-- View all analysis history
+- View all analysis history and version data
 - Delete outdated analysis versions
-- Delete inappropriate comments
-- View all segments (read-only)
-- View and manage all comments left by reviewers
+- View and delete comments
+- Upload videos from local or extracted sources
+- Cannot edit any segment directly
 
 **UI Implications:**
 - View-only version list with timestamp navigation
 - “Delete” button for each version and comment
 - Timeline table with clickable time slots
-- Display all tags and comment content with moderation controls
+- Comment moderation panel with tag display
+- Upload interface with file selector and extract-from-link input
 
 ---
 
 ## 🎯 Design Rationale
 
-- **Role separation increases clarity**: Each user has a focused job, reducing mistakes.
-- **Reviewer is intentionally distinct from Annotator**: To maintain objective quality control.
-- **Admin avoids editing segments**: To maintain audit traceability and control scope, but can fully manage comment lifecycle.
+- **Role separation increases clarity**: Each user has a focused task, reducing mistakes and cognitive load.
+- **Reviewer is distinct from Annotator**: Reviewers offer objective feedback without editing the original content.
+- **Admin has oversight, not content creation**: Admins can review and moderate but don’t directly alter content to preserve traceability.
 
 ---
 
 ## 🧱 Scaling Notes
 
 If this system were to scale:
-- Use real auth system (e.g. Firebase, Supabase) to assign roles
-- Store segments, comments, and logs in a backend database
-- Paginate video segments for performance
-- Add user-specific task assignment for Annotators/Reviewers
+
+- Use a real authentication and role management system (e.g., Firebase, Supabase)
+- Persist all segments, comments, and logs to a backend database
+- Implement pagination or virtual scrolling for long segment lists
+- Add task assignment workflows between Annotators and Reviewers
+- Enable batch operations for Admin (e.g., multi-delete)
 
 ---
 
 ## ✅ Summary Table
 
-| Role       | Create Segments | Edit Descriptions | Comment | Add Tags | Upload Video | Re-analyze | View Logs | Delete Versions | Delete Comments |
-|------------|------------------|--------------------|---------|----------|---------------|-------------|------------|------------------|------------------|
-| Annotator  | ✅               | ✅                 | ❌      | ❌       | ❌            | ❌          | ❌         | ❌               | ❌               |
-| Reviewer   | ❌               | ❌ (read-only)     | ✅      | ✅       | ❌            | ❌          | ❌         | ❌               | ❌               |
-| Admin      | ❌               | ❌ (read-only)     | View All | View All | ✅ (mocked)   | ✅ (mocked) | ✅ (mocked)| ✅               | ✅               |
+| Role       | Create Segments | Edit Descriptions | Comment         | Add Tags       | Upload Video | View Analysis      | Delete Versions | Delete Comments |
+|------------|------------------|--------------------|------------------|----------------|---------------|---------------------|------------------|------------------|
+| Annotator  | ✅               | ✅                 | ❌               | ❌             | ❌            | ✅                  | ❌               | ❌               |
+| Reviewer   | ❌               | ❌ (read-only)     | ✅               | ✅             | ❌            | ✅ (all versions)   | ❌               | ❌               |
+| Admin      | ❌               | ❌ (read-only)     | ✅ (manage all)  | ✅ (view only) | ✅            | ✅ (full access)    | ✅               | ✅               |
