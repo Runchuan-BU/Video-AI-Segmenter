@@ -2,6 +2,7 @@
 
 AI-powered tool for segmenting videos into timestamped action descriptions using Google Gemini. Built with FastAPI and Next.js.
 
+https://www.youtube.com/watch?v=Dg70Yar8Scs&t=6s
 https://www.youtube.com/channel/UCk2tYTMtT9b43Jb0toR7pBg
 
 ---
