@@ -4,20 +4,40 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-
-type Segment = { time_slot: string; description: string };
-type AnalysisResult = Segment[] | string | { error: string } | null;
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import VideoPlayer from '@/components/video/VideoPlayer';
+import ModelSelector from '@/components/video/ModelSelector';
+import AnalysisResultTable from '@/components/video/AnalysisResultTable';
+import ActionButtons from '@/components/ui/ActionButtons';
+import ReviewerPanel from '@/components/reviewer/ReviewerPanel';
+import AdminPanel from '@/components/admin/AdminPanel';
+import {
+  fetchAnalysis,
+  saveAnalysis,
+  copyToClipboard,
+  updateSegmentList,
+  Segment,
+  AnalysisResult,
+} from '@/utils/analysisHelpers';
 
 export default function VideoDetailPage() {
   const router = useRouter();
   const { filename } = useParams();
-  const [analysis, setAnalysis] = useState<AnalysisResult>(null);
+  const resolvedFilename = Array.isArray(filename) ? filename[0] : filename;
+  if (!resolvedFilename) return null;
+  const role = useSelector((state: RootState) => state.role);
+
+  // const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [editedAnalysis, setEditedAnalysis] = useState<Segment[] | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showError, setShowError] = useState(false);
+  
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedModel, setSelectedModel] = useState('GEMINI-2.0-FLASH');
+
   const analysisCache = useRef<Record<string, AnalysisResult>>({});
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const MODEL_OPTIONS = [
     'GEMINI-2.0-FLASH',
@@ -25,182 +45,157 @@ export default function VideoDetailPage() {
     'GEMINI-1.5-PRO',
   ];
 
-  const parseStartTime = (slot: string): number => {
-    const match = slot.match(/^(\d{2}):(\d{2})/);
-    if (!match) return 0;
-    const [, min, sec] = match;
-    return parseInt(min) * 60 + parseInt(sec);
-  };
-
   const handleAnalyze = async () => {
     if (!filename) return;
 
     setLoading(true);
-    setAnalysis(null);
-    setShowError(false);
+    // setAnalysis(null);
     setHasAnalyzed(true);
 
-    const timeoutId = setTimeout(() => setShowError(true), 120_000);
 
     try {
-      const res = await fetch('http://localhost:8000/analyze', {
-        method: 'POST',
-        body: new URLSearchParams({
-          filepath: filename as string,
-          model: selectedModel,
-        }),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      });
-
-      const data = await res.json();
-      let result: AnalysisResult;
-
-      if (data.status === 'error') {
-        result = { error: data.error };
-      } else if (data.status === 'success' && typeof data.results === 'string') {
-        try {
-          result = JSON.parse(data.results);
-        } catch {
-          result = data.results;
-        }
-      } else if ('results' in data) {
-        result = data.results;
-      } else {
-        result = { error: 'Unknown response format' };
-      }
-
+      const result = await fetchAnalysis(resolvedFilename, selectedModel);
       analysisCache.current[filename as string] = result;
-      setAnalysis(result);
+      // setAnalysis(result);
+      setEditedAnalysis(Array.isArray(result) ? [...result] : null);
     } catch (err: any) {
       const errorObj = { error: err.message || 'Unknown error' };
       analysisCache.current[filename as string] = errorObj;
-      setAnalysis(errorObj);
+      // setAnalysis(errorObj);
     } finally {
       setLoading(false);
-      clearTimeout(timeoutId);
     }
+  };
+  
+  const handleUpdateSegment = (
+    index: number,
+    field: 'time_slot' | 'description' | 'add' | 'delete',
+    value: string
+  ) => {
+    if (!editedAnalysis) return;
+    const updated = updateSegmentList(editedAnalysis, index, field, value);
+    setEditedAnalysis(updated);
   };
 
   const handleCopy = () => {
-    if (!analysis) return;
-    const text = typeof analysis === 'string' ? analysis : JSON.stringify(analysis, null, 2);
-    navigator.clipboard.writeText(text).then(() => {
+    if (!editedAnalysis) return;
+    copyToClipboard(editedAnalysis).then(() => {
       alert('✅ Analysis result copied to clipboard');
     });
   };
 
+  const handleSave = async () => {
+    if (!editedAnalysis || !filename) return;
+    try {
+      await saveAnalysis(resolvedFilename, editedAnalysis);
+      alert('✅ Saved successfully!');
+      setIsEditing(false); 
+    } catch {
+      alert('❌ Save failed.');
+    }
+  };
+
+
+  // if (!['annotator', 'reviewer', 'admin'].includes(role)) {
+  //   return (
+  //     <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-yellow-50 p-4">
+  //       <div className="text-gray-700 text-lg">🔒 Invalid role: {role}</div>
+  //     </main>
+  //   );
+  // }
+
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-yellow-50 p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-3xl text-center">
+    <main className="min-h-screen bg-gradient-to-br from-gray-100 to-yellow-50 p-4 w-full max-w-3xl mx-auto">
+      <div className="absolute top-4 right-6 text-sm text-gray-600">
+        👤 Current Role: <strong className="text-indigo-700">{role}</strong>
+      </div>
+      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-3xl">
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">🎞️ {filename}</h2>
 
-        <video
-          ref={videoRef}
-          src={`http://localhost:8000/videos/${filename}`}
-          controls
-          className="w-full max-h-[480px] rounded mb-6"
-        />
-
-        {/* 模型选择 */}
-        <div className="mb-6">
-          <label className="block mb-1 font-medium text-gray-700">Select Gemini Model:</label>
-          <select
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 w-full max-w-xs"
-          >
-            {MODEL_OPTIONS.map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {!hasAnalyzed && (
-          <div className="mt-6 flex justify-center gap-4">
-            <button
-              onClick={handleAnalyze}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              🧠 Start Analysis
-            </button>
-            <button
-              onClick={() => router.push('/videos')}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-            >
-              ⬅️ Back to Video List
-            </button>
-          </div>
+        {resolvedFilename && (
+          <VideoPlayer videoRef={videoRef} filename={resolvedFilename} />
         )}
 
-        {hasAnalyzed && (
-          <>
-            <div className="text-left mt-6">
-              <h3 className="font-semibold mb-2">🧠 Analysis Result:</h3>
-              {loading ? (
-                <p>Loading...</p>
-              ) : analysis === null ? (
-                <p>No result.</p>
-              ) : typeof analysis === 'string' ? (
-                <pre className="bg-gray-100 p-4 rounded text-sm">{analysis}</pre>
-              ) : 'error' in analysis && !showError ? (
-                <p>Processing...</p>
-              ) : 'error' in analysis ? (
-                <p className="text-red-600">❌ Error: {analysis.error}</p>
-              ) : Array.isArray(analysis) ? (
-                <table className="table-auto w-full border-collapse border border-gray-300 text-left text-sm">
-                  <thead>
-                    <tr className="bg-gray-200">
-                      <th className="border border-gray-300 px-4 py-2">🕒 Time Slot</th>
-                      <th className="border border-gray-300 px-4 py-2">📋 Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analysis.map((item, index) => (
-                      <tr
-                        key={index}
-                        className="even:bg-gray-50 cursor-pointer hover:bg-yellow-100 transition"
-                        onClick={() => {
-                          const start = parseStartTime(item.time_slot);
-                          if (videoRef.current) videoRef.current.currentTime = start;
-                        }}
-                      >
-                        <td className="border border-gray-300 px-4 py-2">{item.time_slot}</td>
-                        <td className="border border-gray-300 px-4 py-2">{item.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto whitespace-pre-wrap text-left">
-                  {JSON.stringify(analysis, null, 2)}
-                </pre>
-              )}
-            </div>
+        
 
+        {/* admin */}
+        {role === 'admin' && (
+          <>
+            <AdminPanel filename={resolvedFilename} videoRef={videoRef} />
             <div className="mt-6 flex justify-center gap-4">
-              <button
-                onClick={handleAnalyze}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              >
-                🔄 Re-analyze
-              </button>
-              <button
-                onClick={handleCopy}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-              >
-                📋 Copy Result
-              </button>
-              <button
-                onClick={() => router.push('/videos')}
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-              >
-                ⬅️ Back to Video List
-              </button>
+              <ActionButtons
+                buttons={[
+                  {
+                    icon: '⬅️',
+                    label: 'Back to Video List',
+                    onClick: () => router.push('/videos'),
+                    color: 'gray',
+                  },
+                ]}
+              />
             </div>
           </>
         )}
+
+        
+        {/* reviewer */}
+        {role === 'reviewer' && (
+          <>
+            <ReviewerPanel filename={resolvedFilename} videoRef={videoRef} />
+            <div className="mt-6 flex justify-center gap-4">
+              <ActionButtons
+                buttons={[{
+                  icon: '⬅️',
+                  label: 'Back to Video List',
+                  onClick: () => router.push('/videos'),
+                  color: 'gray',
+                }]} />
+            </div>
+          </>
+        )}
+        
+        {/* annotator */}
+        {!hasAnalyzed && role === 'annotator' && (
+          <div className="mt-6 flex flex-col items-center justify-center gap-4">
+            <div className="w-full max-w-md mx-auto">
+              <ModelSelector
+                options={MODEL_OPTIONS}
+                value={selectedModel}
+                onChange={setSelectedModel}
+              />
+            </div>
+        
+            <ActionButtons
+              buttons={[
+                {
+                  icon: '🧠',
+                  label: 'Start Analysis',
+                  onClick: handleAnalyze,
+                  color: 'blue',
+                },
+                {
+                  icon: '⬅️',
+                  label: 'Back to Video List',
+                  onClick: () => router.push('/videos'),
+                  color: 'gray',
+                },
+              ]}
+            />
+        </div>
+        )}
+        {hasAnalyzed && role === 'annotator' && (
+          <AnalysisResultTable
+            editedAnalysis={editedAnalysis}
+            loading={loading}
+            isEditing={isEditing}
+            videoRef={videoRef}
+            onUpdateSegment={isEditing ? handleUpdateSegment : undefined}
+            onSave={handleSave}
+            onCopy={handleCopy}
+            onToggleEdit={() => setIsEditing((prev) => !prev)}
+          />
+        )}
+
       </div>
     </main>
   );

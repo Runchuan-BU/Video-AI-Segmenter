@@ -1,0 +1,23 @@
+{
+  "filename": "distractor_tape.mov",
+  "history": [
+    {
+      "timestamp": "2025-05-22T11:29:42.103872",
+      "results": [
+        {
+          "time_slot": "00:00 - 00:32",
+          "description": "A robot arm is placing toys on a table."
+        }
+      ],
+      "comments": [
+        {
+          "content": "nice",
+          "tags": [
+            "good",
+            "short"
+          ]
+        }
+      ]
+    }
+  ]
+}

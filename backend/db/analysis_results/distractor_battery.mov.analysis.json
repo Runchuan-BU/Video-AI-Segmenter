@@ -1,0 +1,27 @@
+{
+  "filename": "distractor_battery.mov",
+  "history": [
+    {
+      "timestamp": "2025-05-22T11:33:40.628144",
+      "results": [
+        {
+          "time_slot": "00:01 - 00:04",
+          "description": "A green toy is placed next to a battery"
+        },
+        {
+          "time_slot": "00:06 - 00:08",
+          "description": "A robotic arm places a battery in a slot"
+        },
+        {
+          "time_slot": "00:08 - 00:14",
+          "description": "A variety of toys are placed around the robotic arms"
+        },
+        {
+          "time_slot": "00:22 - 00:23",
+          "description": "The battery cover is removed by the arm"
+        }
+      ],
+      "comments": []
+    }
+  ]
+}

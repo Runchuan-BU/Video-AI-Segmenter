@@ -1,0 +1,23 @@
+{
+  "filename": "reactive_cup.mov",
+  "history": [
+    {
+      "timestamp": "2025-05-22T11:36:19.404282",
+      "results": [
+        {
+          "time_slot": "00:00 - 00:07",
+          "description": "The robotic arm moves towards the strip of paper and the plastic cup."
+        },
+        {
+          "time_slot": "00:07 - 00:12",
+          "description": "A person puts the plastic cup next to the paper."
+        },
+        {
+          "time_slot": "00:12 - 00:27",
+          "description": "The robotic arm reaches for the plastic cup and picks it up."
+        }
+      ],
+      "comments": []
+    }
+  ]
+}
