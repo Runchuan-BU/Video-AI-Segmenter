@@ -48,13 +48,14 @@ This document explains the design rationale behind the three user roles in the s
 - View all analysis history
 - Delete outdated analysis versions
 - Delete inappropriate comments
-- Has read-only access to segment content
+- View all segments (read-only)
+- View and manage all comments left by reviewers
 
 **UI Implications:**
-- View-only version list
+- View-only version list with timestamp navigation
 - “Delete” button for each version and comment
 - Timeline table with clickable time slots
-- Display tags and comment content
+- Display all tags and comment content with moderation controls
 
 ---
 
@@ -62,7 +63,7 @@ This document explains the design rationale behind the three user roles in the s
 
 - **Role separation increases clarity**: Each user has a focused job, reducing mistakes.
 - **Reviewer is intentionally distinct from Annotator**: To maintain objective quality control.
-- **Admin avoids editing segments**: To maintain audit traceability and control scope.
+- **Admin avoids editing segments**: To maintain audit traceability and control scope, but can fully manage comment lifecycle.
 
 ---
 
@@ -78,8 +79,8 @@ If this system were to scale:
 
 ## ✅ Summary Table
 
-| Role       | Create Segments | Edit Descriptions | Comment | Add Tags | Upload Video | Re-analyze | View Logs | Delete |
-|------------|------------------|--------------------|---------|----------|---------------|-------------|------------|---------|
-| Annotator  | ✅               | ✅                 | ❌      | ❌       | ❌            | ❌          | ❌         | ❌      |
-| Reviewer   | ❌               | ❌ (read-only)     | ✅      | ✅       | ❌            | ❌          | ❌         | ❌      |
-| Admin      | ❌               | ❌ (read-only)     | ❌      | ❌       | ✅ (mocked)   | ✅ (mocked) | ✅ (mocked)| ✅      |
+| Role       | Create Segments | Edit Descriptions | Comment | Add Tags | Upload Video | Re-analyze | View Logs | Delete Versions | Delete Comments |
+|------------|------------------|--------------------|---------|----------|---------------|-------------|------------|------------------|------------------|
+| Annotator  | ✅               | ✅                 | ❌      | ❌       | ❌            | ❌          | ❌         | ❌               | ❌               |
+| Reviewer   | ❌               | ❌ (read-only)     | ✅      | ✅       | ❌            | ❌          | ❌         | ❌               | ❌               |
+| Admin      | ❌               | ❌ (read-only)     | View All | View All | ✅ (mocked)   | ✅ (mocked) | ✅ (mocked)| ✅               | ✅               |
