@@ -34,42 +34,32 @@ GEMINI_API_KEY=your_google_gemini_key
 
 ### Install & Run
 
-
 ```bash
 cd backend
 poetry install
 poetry shell
-```
-
-
-
-Then run the backend server:
-
-```bash
-cd app
 uvicorn app.main:app --reload
 ```
 
-> By default it runs on `http://localhost:8000`
+> Server running at: [http://localhost:8000](http://localhost:8000)
 
 ---
 
-## 💻 Frontend Setup (Next.js)
+## 💻 Frontend Setup (Next.js + Storybook)
 
 ### Prerequisites
 
-- Next.js 
-- npm
+- Node.js / npm
+- Next.js
 
 ### Install & Run
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev         # Run frontend
+npm run storybook   # Run Storybook at http://localhost:6006
 ```
-
-> Open in browser: [http://localhost:3000](http://localhost:3000)
 
 ---
 
@@ -77,23 +67,60 @@ npm run dev
 
 ```
 Video-AI-Segmenter/
-├── backend/               # FastAPI backend
-│   ├── videos/            # Uploaded video files
-│   └── app/
-│       ├── main.py
-│       └── services/
-│           └── ai_model_gemini.py
-├── frontend/              # Next.js frontend
-│   └── src/app/
-│       ├── page.tsx
-│       ├── upload/
-│       │   └── page.tsx
-│       └── videos/
-│           ├── page.tsx
-│           └── [filename]/page.tsx
-
-
+├── backend/                        # FastAPI backend
+│   ├── app/
+│   │   ├── api/                    # FastAPI endpoints
+│   │   ├── schemas/               # Pydantic models
+│   │   ├── services/              # Gemini logic
+│   │   └── main.py                # FastAPI entrypoint
+│   ├── db/
+│   │   ├── videos/                # Uploaded videos
+│   │   ├── logs/                  # Log files
+│   │   └── analysis_results/      # JSON results
+│   └── tests/                     # Pytest unit tests
+│
+├── frontend/                      # Next.js + Tailwind frontend
+│   ├── .storybook/                # Storybook config (main.ts, preview.ts)
+│   ├── public/                    # Static assets
+│   ├── src/
+│   │   ├── app/                   # Next.js app router
+│   │   │   └── videos/[filename]/page.tsx
+│   │   ├── components/            # Reusable UI components
+│   │   ├── redux/                 # Redux store & slices
+│   │   ├── stories/               # Storybook stories (optional global)
+│   │   └── utils/                 # Shared frontend logic
+│
+├── README.md
+├── .env
+├── package.json / poetry.lock
 ```
+
+---
+
+## 📘 Storybook Usage
+
+Storybook is used for developing and testing UI components in isolation.
+
+### Run Storybook:
+
+```bash
+cd frontend
+npm run storybook
+```
+
+> Visit [http://localhost:6006](http://localhost:6006)
+
+### Where to write stories:
+
+- Create `*.stories.tsx` under `src/components/**/stories/` or `src/stories/`
+- Example: `src/components/admin/stories/AdminPanel.stories.tsx`
+
+### Features:
+
+✅ Component previews with props  
+✅ Redux-aware components (via decorators)  
+✅ `@storybook/addon-actions` to trace events  
+✅ Support for mock APIs / injected dependencies
 
 ---
 
@@ -108,12 +135,16 @@ Video-AI-Segmenter/
 
 ---
 
-## 🧪 Useful Endpoints
+## 🔌 Useful API Endpoints
 
-- `POST /upload_video` – Upload a video
-- `POST /analyze` – Run Gemini to analyze the video
-- `GET /videos/{filename}` – Serve static video
-- `GET /list-videos` – List all uploaded video filenames
+| Endpoint                             | Description                            |
+|--------------------------------------|----------------------------------------|
+| `POST /upload_video`                 | Upload video to backend                |
+| `POST /analyze`                      | Run Gemini to analyze video            |
+| `GET /videos/{filename}`            | Serve a specific uploaded video        |
+| `GET /list-videos`                  | List all uploaded video filenames      |
+| `POST /extract_videos_from_url`     | Extract video links from a webpage     |
+| `POST /download_videos_from_links`  | Download selected video links          |
 
 ---
 
