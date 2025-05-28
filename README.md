@@ -46,7 +46,7 @@ Then run the backend server:
 
 ```bash
 cd app
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 > By default it runs on `http://localhost:8000`

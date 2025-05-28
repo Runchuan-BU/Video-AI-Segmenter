@@ -2,6 +2,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import ActionButtons from '../ActionButtons';
+import { action } from '@storybook/addon-actions';
 
 const meta: Meta<typeof ActionButtons> = {
   title: 'UI/ActionButtons',
@@ -19,25 +20,25 @@ export const Default: Story = {
         label: 'Back',
         icon: '⬅️',
         color: 'gray',
-        onClick: () => alert('Back clicked'),
+        onClick: action('Back clicked'),
       },
       {
         label: 'Save',
         icon: '💾',
         color: 'blue',
-        onClick: () => alert('Save clicked'),
+        onClick: action('Save clicked'),
       },
       {
         label: 'Confirm',
         icon: '✅',
         color: 'green',
-        onClick: () => alert('Confirm clicked'),
+        onClick: action('Confirm clicked'),
       },
       {
         label: 'Delete',
         icon: '🗑️',
         color: 'red',
-        onClick: () => alert('Delete clicked'),
+        onClick: action('Delete clicked'),
       },
     ],
   },

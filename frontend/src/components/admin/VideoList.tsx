@@ -1,3 +1,5 @@
+// src/components/admin/VideoList.tsx
+
 'use client';
 
 type Props = {

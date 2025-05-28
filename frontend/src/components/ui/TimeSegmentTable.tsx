@@ -15,6 +15,7 @@ interface Props {
     value: string
   ) => void;
   onAddSegment?: () => void;
+  onClickSegment?: (index: number, timeInSeconds: number) => void;
 }
 
 export default function TimeSegmentTable({
@@ -23,16 +24,16 @@ export default function TimeSegmentTable({
   videoRef,
   onUpdateSegment,
   onAddSegment,
+  onClickSegment, 
 }: Props) {
-  
-    const parseStartTime = (slot: string): number => {
-        const start = slot.split('-')[0]?.trim(); // "00:01"
-        const [minStr, secStr] = start.split(':');
-        const min = parseInt(minStr, 10);
-        const sec = parseInt(secStr, 10);
-        if (isNaN(min) || isNaN(sec)) return 0;
-        return min * 60 + sec;
-      };
+  const parseStartTime = (slot: string): number => {
+    const start = slot.split('-')[0]?.trim(); // "00:01"
+    const [minStr, secStr] = start.split(':');
+    const min = parseInt(minStr, 10);
+    const sec = parseInt(secStr, 10);
+    if (isNaN(min) || isNaN(sec)) return 0;
+    return min * 60 + sec;
+  };
 
   return (
     <table className="table-auto w-full border-collapse border border-gray-300 text-left text-sm">
@@ -40,17 +41,25 @@ export default function TimeSegmentTable({
         <tr className="bg-gray-200">
           <th className="border border-gray-300 px-4 py-2">🕒 Time Slot</th>
           <th className="border border-gray-300 px-4 py-2">📋 Description</th>
-          {isEditable && <th className="border border-gray-300 px-2 py-2 text-center">🗑️</th>}
+          {isEditable && (
+            <th className="border border-gray-300 px-2 py-2 text-center">🗑️</th>
+          )}
         </tr>
       </thead>
       <tbody>
         {segments.map((seg, i) => (
           <tr
             key={i}
-            className={`even:bg-gray-50 ${!isEditable ? 'cursor-pointer hover:bg-yellow-100' : ''}`}
+            className={`even:bg-gray-50 ${
+              !isEditable ? 'cursor-pointer hover:bg-yellow-100' : ''
+            }`}
             onClick={() => {
               if (!isEditable && videoRef.current) {
-                videoRef.current.currentTime = parseStartTime(seg.time_slot);
+                const seconds = parseStartTime(seg.time_slot);
+                videoRef.current.currentTime = seconds;
+
+                // ✅ 新增：触发外部监听器
+                onClickSegment?.(i, seconds);
               }
             }}
           >
@@ -59,7 +68,9 @@ export default function TimeSegmentTable({
                 <input
                   type="text"
                   value={seg.time_slot}
-                  onChange={(e) => onUpdateSegment?.(i, 'time_slot', e.target.value)}
+                  onChange={(e) =>
+                    onUpdateSegment?.(i, 'time_slot', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded px-2 py-1"
                 />
               ) : (
@@ -70,7 +81,9 @@ export default function TimeSegmentTable({
               {isEditable ? (
                 <textarea
                   value={seg.description}
-                  onChange={(e) => onUpdateSegment?.(i, 'description', e.target.value)}
+                  onChange={(e) =>
+                    onUpdateSegment?.(i, 'description', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded px-2 py-1"
                 />
               ) : (

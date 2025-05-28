@@ -1,5 +1,8 @@
+// src/components/ui/stories/TimeSegmentTable.stories.tsx
+
 import type { Meta, StoryObj } from '@storybook/react';
 import { useRef, useState } from 'react';
+import { action } from '@storybook/addon-actions';
 import TimeSegmentTable from '../TimeSegmentTable';
 import { Segment } from '@/utils/analysisHelpers';
 
@@ -7,6 +10,10 @@ const meta: Meta<typeof TimeSegmentTable> = {
   title: 'UI/TimeSegmentTable',
   component: TimeSegmentTable,
   tags: ['autodocs'],
+  argTypes: {
+    onUpdateSegment: { action: 'segment updated' },
+    onAddSegment: { action: 'segment added' },
+  },
 };
 
 export default meta;
@@ -21,12 +28,19 @@ const mockSegments: Segment[] = [
 export const ReadOnly: Story = {
   render: () => {
     const dummyRef = useRef<HTMLVideoElement>(null);
+    const logClick = action('segment clicked');
+
     return (
       <div className="p-4 max-w-3xl">
+        <video ref={dummyRef} style={{ display: 'none' }} />
+
         <TimeSegmentTable
           segments={mockSegments}
           isEditable={false}
           videoRef={dummyRef}
+          onClickSegment={(index, seconds) => {
+            logClick({ index, seconds });
+          }}
         />
       </div>
     );
@@ -43,6 +57,8 @@ export const Editable: Story = {
       field: 'time_slot' | 'description' | 'add' | 'delete',
       value: string
     ) => {
+      action('segment updated')({ index, field, value }); // log to Storybook
+
       const updated = [...segments];
       if (field === 'delete') {
         updated.splice(index, 1);
@@ -58,6 +74,8 @@ export const Editable: Story = {
     };
 
     const handleAdd = () => {
+      action('segment added')(); // log to Storybook
+
       setSegments([
         ...segments,
         { time_slot: '00:14 - 00:18', description: 'New segment' },

@@ -1,4 +1,4 @@
-// src/components/video/ReviewerPanel.tsx
+// src/components/reviewer/ReviewerPanel.tsx
 
 'use client';
 

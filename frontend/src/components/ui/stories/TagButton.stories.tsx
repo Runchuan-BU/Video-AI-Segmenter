@@ -1,12 +1,15 @@
-import TagButton from '../TagButton';
+// src/components/ui/TagButton.stories.tsx
+
 import type { Meta, StoryObj } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
+import TagButton from '../TagButton';
 
 const meta: Meta<typeof TagButton> = {
   title: 'UI/TagButton',
   component: TagButton,
   tags: ['autodocs'],
   argTypes: {
-    tagColor: {
+    tag: {
       control: 'select',
       options: [
         'issue', 'good', 'unclear', 'typo', 'long',
@@ -14,34 +17,30 @@ const meta: Meta<typeof TagButton> = {
       ],
     },
     selected: { control: 'boolean' },
+    onClick: { action: 'clicked' },
   },
 };
 
 export default meta;
-
 type Story = StoryObj<typeof TagButton>;
 
 export const Default: Story = {
   args: {
     tag: 'issue',
-    tagColor: 'issue',
     selected: false,
-    onClick: () => alert('Clicked tag: issue'),
   },
 };
 
 export const Selected: Story = {
   args: {
     tag: 'good',
-    tagColor: 'good',
     selected: true,
-    onClick: () => alert('Clicked tag: good'),
   },
 };
 
 export const AllTags: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
       {[
         'issue', 'good', 'unclear', 'typo', 'long',
         'short', 'missing', 'duplicate', 'confusing', 'wrong',
@@ -49,9 +48,8 @@ export const AllTags: Story = {
         <TagButton
           key={tag}
           tag={tag}
-          tagColor={tag}
           selected={false}
-          onClick={() => alert(`Clicked tag: ${tag}`)}
+          onClick={action(`Clicked tag: ${tag}`)}
         />
       ))}
     </div>
